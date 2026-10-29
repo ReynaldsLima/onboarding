@@ -153,6 +153,25 @@ sem migração. A resposta salva em `answers` guarda o valor escolhido (ou
 array, para múltipla escolha) e, quando "Outro" é selecionado, o texto
 complementar digitado.
 
+## Design visual
+
+- **Tipografia**: pilha de fontes do sistema Apple —
+  `-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+  "Helvetica Neue", Arial, sans-serif`. Renderiza San Francisco em
+  dispositivos Apple e um sans-serif equivalente em Windows/Android, sem
+  precisar de licença/embed de fonte.
+- **Paleta**:
+  - `#F5F5F7` — fundo da página
+  - `#FFFFFF` — fundo de cards/formulário
+  - `#1D1D1F` — texto principal
+  - `#AAAAAA` — texto secundário, bordas, placeholders
+  - `#007AFF` — cor de destaque (botões, links, foco, seleção)
+  - `#0066CC` — hover/active do azul de destaque
+  - `#34C759` — sucesso (ex: "respostas salvas", status concluído)
+  - `#FF3B30` — erro/validação
+- **Estilo geral**: cantos arredondados, bastante espaço em branco,
+  sombras suaves, estética clean inspirada no design da Apple.
+
 ## Componentes
 
 - `app/onboarding/[slug]/page.tsx` — formulário público, client component
