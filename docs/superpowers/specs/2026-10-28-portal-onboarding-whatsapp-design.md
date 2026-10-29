@@ -81,29 +81,77 @@ perguntas do formulário sem migração de schema a cada mudança.
 
 ## Formulário — 8 seções
 
-1. **Empresa**: nome, segmento, site/Instagram, contato responsável
-   (nome/e-mail/telefone), horário de atendimento humano.
-2. **Persona do agente**: nome do agente, tom de voz, saudação exemplo,
-   idiomas.
-3. **Atendimento**: produtos/serviços principais, dúvidas frequentes, pode
-   informar preço (sim/não), quando transferir para humano.
-4. **Agendamento**: usa agendamento (sim/não), ferramenta usada, serviços
-   agendáveis + duração, regras de horário/antecedência, confirmação
-   automática.
-5. **Qualificação de leads e Segmentação**: critérios gerais de
-   qualificação, critérios de segmentação por porte/tamanho, por
-   localização (regiões/bairros/condomínios atendidos, se aplicável), por
-   tipo de cliente/projeto (ex: residencial x corporativo), o que fazer
-   com lead qualificado vs não qualificado.
-6. **Follow-up**: precisa de follow-up automático, regra de disparo (dias
-   sem resposta), nº de tentativas, mensagem de reengajamento.
-7. **Integrações e restrições**: CRM usado, número de WhatsApp (já tem
-   Business API?), o que o agente nunca deve dizer, observações finais.
-8. **Equipe e Roteamento**: lista de atendentes/vendedores padrão (nome +
-   WhatsApp/usuário do CRM, campo repetível), atendente(s) especialista(s)
-   para segmento diferenciado (se houver), regras de disponibilidade
-   (horário de almoço, folgas, horário de cada um), regra de fallback
-   (para quem o lead vai se o responsável não estiver disponível).
+Tipos de campo usados: `texto` (texto livre), `texto-repetivel` (lista
+dinâmica de itens de texto, botão "adicionar outro"), `sim-não`,
+`seleção-única` (botões/radio, com opção "Outro" que revela um campo de
+texto), `múltipla-escolha` (checkboxes, com opção "Outro" que revela um
+campo de texto), `dias-da-semana` (checkboxes Seg–Dom + horário).
+
+1. **Empresa**
+   - Nome da empresa — `texto`
+   - Segmento — `seleção-única`: Varejo, Saúde, Imobiliário, Educação,
+     Serviços profissionais, Alimentação, Beleza/Estética, Outro
+   - Site/Instagram — `texto`
+   - Contato responsável (nome, e-mail, telefone) — `texto`
+   - Horário de atendimento humano — `dias-da-semana`
+2. **Persona do agente**
+   - Nome do agente — `texto`
+   - Tom de voz — `seleção-única`: Formal, Informal e amigável, Técnico,
+     Descontraído, Outro
+   - Saudação exemplo — `texto`
+   - Idiomas — `múltipla-escolha`: Português, Inglês, Espanhol, Outro
+3. **Atendimento**
+   - Produtos/serviços principais — `texto-repetível`
+   - Dúvidas frequentes — `texto-repetível`
+   - Pode informar preço — `sim-não`
+   - Quando transferir para humano — `múltipla-escolha`: cliente pede,
+     reclamação/insatisfação, pergunta fora do escopo, negociação de
+     valor, Outro
+4. **Agendamento**
+   - Usa agendamento — `sim-não`
+   - Ferramenta usada — `seleção-única`: Google Calendar, Calendly,
+     Sistema próprio, Ainda não tem, Outro
+   - Serviços agendáveis + duração — `texto-repetível`
+   - Antecedência mínima — `seleção-única`: 30min, 1h, 2h, 1 dia, Outro
+   - Confirmação automática — `sim-não`
+5. **Qualificação de leads e Segmentação**
+   - Critérios de qualificação — `múltipla-escolha`: orçamento/ticket
+     mínimo, urgência/prazo, localização, tipo de produto/serviço,
+     decisor presente, Outro
+   - Critérios de segmentação por porte/tamanho — `texto` (muito
+     específico por negócio, ex: m², faturamento, ticket médio)
+   - Critérios de segmentação por localização — `texto` (ex: bairros,
+     regiões, condomínios atendidos, se aplicável)
+   - Critérios de segmentação por tipo de cliente/projeto — `texto` (ex:
+     residencial x corporativo, pessoa física x empresa)
+   - O que fazer com lead qualificado vs não qualificado — `texto`
+6. **Follow-up**
+   - Precisa de follow-up automático — `sim-não`
+   - Disparar follow-up após — `seleção-única`: 1 dia, 2 dias, 3 dias,
+     7 dias, Outro
+   - Número de tentativas — `seleção-única`: 1, 2, 3, Outro
+   - Mensagem de reengajamento — `texto`
+7. **Integrações e restrições**
+   - CRM usado — `seleção-única`: RD Station, HubSpot, Pipedrive,
+     Planilha, Nenhum ainda, Outro
+   - Já tem número de WhatsApp Business API ativo — `sim-não`
+   - O que o agente nunca deve dizer — `texto`
+   - Observações finais — `texto`
+8. **Equipe e Roteamento**
+   - Atendentes/vendedores padrão (nome + WhatsApp/usuário do CRM) —
+     `texto-repetível`
+   - Atendente(s) especialista(s) para segmento diferenciado, se houver —
+     `texto-repetível`
+   - Disponibilidade de cada atendente (dias/horário, almoço, folgas) —
+     `dias-da-semana` por atendente
+   - Regra de fallback (para quem o lead vai se o responsável não estiver
+     disponível) — `texto`
+
+A lista de opções de cada campo `seleção-única`/`múltipla-escolha` fica
+numa constante no código (não no banco), para facilitar ajustes futuros
+sem migração. A resposta salva em `answers` guarda o valor escolhido (ou
+array, para múltipla escolha) e, quando "Outro" é selecionado, o texto
+complementar digitado.
 
 ## Componentes
 
