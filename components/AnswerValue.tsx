@@ -18,6 +18,16 @@ function optionLabel(field: FormField, value: string): string {
   return field.options?.find((opt) => opt.value === value)?.label ?? value;
 }
 
+type Schedule = { days: string[]; start: string | null; end: string | null };
+
+function formatSchedule(schedule: Schedule | undefined): string {
+  if (!schedule || schedule.days.length === 0) return "";
+  const days = schedule.days.map((d) => WEEKDAY_LABELS[d] ?? d).join(", ");
+  const hours =
+    schedule.start && schedule.end ? ` · ${schedule.start} às ${schedule.end}` : "";
+  return `${days}${hours}`;
+}
+
 export function AnswerValue({
   field,
   value,
@@ -76,20 +86,28 @@ export function AnswerValue({
     }
 
     case "weekday-schedule": {
-      const schedule = value as
-        | { days: string[]; start: string | null; end: string | null }
-        | undefined;
-      if (!schedule || schedule.days.length === 0) return <Empty />;
-      const days = schedule.days.map((d) => WEEKDAY_LABELS[d] ?? d).join(", ");
-      const hours =
-        schedule.start && schedule.end
-          ? ` · ${schedule.start} às ${schedule.end}`
-          : "";
+      const schedule = value as Schedule | undefined;
+      const text = formatSchedule(schedule);
+      return text ? <span>{text}</span> : <Empty />;
+    }
+
+    case "attendant-schedule-list": {
+      const entries =
+        (value as { name: string; schedule: Schedule }[] | undefined)?.filter(
+          (e) => e.name,
+        ) ?? [];
+      if (entries.length === 0) return <Empty />;
       return (
-        <span>
-          {days}
-          {hours}
-        </span>
+        <ul className="list-disc pl-5">
+          {entries.map((entry, i) => (
+            <li key={i}>
+              {entry.name}
+              {formatSchedule(entry.schedule)
+                ? ` — ${formatSchedule(entry.schedule)}`
+                : ""}
+            </li>
+          ))}
+        </ul>
       );
     }
 

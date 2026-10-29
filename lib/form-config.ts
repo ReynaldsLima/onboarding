@@ -4,7 +4,8 @@ export type FieldType =
   | "yes-no"
   | "single-select"
   | "multi-select"
-  | "weekday-schedule";
+  | "weekday-schedule"
+  | "attendant-schedule-list";
 
 export interface FieldOption {
   value: string;
@@ -272,7 +273,7 @@ export const FORM_SECTIONS: FormSection[] = [
       {
         id: "attendant_availability",
         label: "Disponibilidade de cada atendente (dias/horário, almoço, folgas)",
-        type: "text-repeatable",
+        type: "attendant-schedule-list",
       },
       { id: "fallback_rule", label: "Regra de fallback", type: "text" },
     ],

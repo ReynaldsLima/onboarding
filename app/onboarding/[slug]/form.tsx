@@ -8,6 +8,7 @@ import { YesNoField } from "@/components/fields/YesNoField";
 import { SingleSelectField } from "@/components/fields/SingleSelectField";
 import { MultiSelectField } from "@/components/fields/MultiSelectField";
 import { WeekdayScheduleField } from "@/components/fields/WeekdayScheduleField";
+import { AttendantScheduleListField } from "@/components/fields/AttendantScheduleListField";
 
 const FIELD_COMPONENTS = {
   text: TextField,
@@ -16,6 +17,7 @@ const FIELD_COMPONENTS = {
   "single-select": SingleSelectField,
   "multi-select": MultiSelectField,
   "weekday-schedule": WeekdayScheduleField,
+  "attendant-schedule-list": AttendantScheduleListField,
 };
 
 type SaveState = "idle" | "saving" | "saved" | "error";
