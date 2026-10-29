@@ -3,6 +3,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import { isAllowedAdmin } from "@/lib/auth";
 
 export async function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname === "/admin/login") {
+    return NextResponse.next();
+  }
+
   const response = NextResponse.next();
 
   const supabase = createServerClient(
@@ -37,5 +41,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/((?!login).*)"],
+  matcher: ["/admin", "/admin/:path*"],
 };

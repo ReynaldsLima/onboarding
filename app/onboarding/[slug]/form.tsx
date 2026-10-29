@@ -18,7 +18,7 @@ const FIELD_COMPONENTS = {
   "weekday-schedule": WeekdayScheduleField,
 };
 
-type SaveState = "idle" | "saving" | "saved";
+type SaveState = "idle" | "saving" | "saved" | "error";
 
 export function OnboardingForm({
   slug,
@@ -32,19 +32,31 @@ export function OnboardingForm({
   const [answers, setAnswers] = useState(initialAnswers);
   const [saveStates, setSaveStates] = useState<Record<string, SaveState>>({});
   const timers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+  // Chains every PATCH behind the previous one so two fields edited close
+  // together never run overlapping read-modify-write cycles on the server.
+  const saveQueue = useRef<Promise<void>>(Promise.resolve());
 
   function handleChange(fieldId: string, value: unknown) {
     setAnswers((prev) => ({ ...prev, [fieldId]: value }));
     setSaveStates((prev) => ({ ...prev, [fieldId]: "saving" }));
 
     clearTimeout(timers.current[fieldId]);
-    timers.current[fieldId] = setTimeout(async () => {
-      await fetch(`/api/onboarding/${slug}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fieldId, value }),
+    timers.current[fieldId] = setTimeout(() => {
+      saveQueue.current = saveQueue.current.then(async () => {
+        try {
+          const res = await fetch(`/api/onboarding/${slug}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ fieldId, value }),
+          });
+          setSaveStates((prev) => ({
+            ...prev,
+            [fieldId]: res.ok ? "saved" : "error",
+          }));
+        } catch {
+          setSaveStates((prev) => ({ ...prev, [fieldId]: "error" }));
+        }
       });
-      setSaveStates((prev) => ({ ...prev, [fieldId]: "saved" }));
     }, 500);
   }
 
@@ -72,6 +84,11 @@ export function OnboardingForm({
                 )}
                 {saveState === "saved" && (
                   <span className="text-xs text-success">Salvo</span>
+                )}
+                {saveState === "error" && (
+                  <span className="text-xs text-error">
+                    Não foi possível salvar, tente novamente
+                  </span>
                 )}
               </div>
             );

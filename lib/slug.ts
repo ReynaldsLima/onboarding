@@ -7,15 +7,20 @@ export function slugify(name: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+const RESERVED_SLUGS = ["login"];
+
 export function generateUniqueSlug(
   name: string,
   existingSlugs: string[],
 ): string {
   const base = slugify(name);
-  if (!existingSlugs.includes(base)) return base;
+  const taken = (slug: string) =>
+    existingSlugs.includes(slug) || RESERVED_SLUGS.includes(slug);
+
+  if (!taken(base)) return base;
 
   let n = 2;
-  while (existingSlugs.includes(`${base}-${n}`)) {
+  while (taken(`${base}-${n}`)) {
     n += 1;
   }
   return `${base}-${n}`;

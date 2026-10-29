@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/auth";
 import { FORM_SECTIONS } from "@/lib/form-config";
 import { AnswerValue } from "@/components/AnswerValue";
 
@@ -8,6 +9,8 @@ export default async function AdminClientPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  await requireAdmin();
+
   const { slug } = await params;
   const supabase = createAdminSupabaseClient();
 

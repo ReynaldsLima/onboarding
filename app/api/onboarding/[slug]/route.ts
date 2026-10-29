@@ -63,12 +63,25 @@ export async function PATCH(
   const answers = { ...(response?.answers ?? {}), [fieldId]: value };
   const status = computeStatus(answers);
 
-  await supabase
+  const { error: responseError } = await supabase
     .from("responses")
-    .update({ answers, updated_at: new Date().toISOString() })
-    .eq("client_id", client.id);
+    .upsert(
+      { client_id: client.id, answers, updated_at: new Date().toISOString() },
+      { onConflict: "client_id" },
+    );
 
-  await supabase.from("clients").update({ status }).eq("id", client.id);
+  if (responseError) {
+    return NextResponse.json({ error: "save_failed" }, { status: 500 });
+  }
+
+  const { error: statusError } = await supabase
+    .from("clients")
+    .update({ status })
+    .eq("id", client.id);
+
+  if (statusError) {
+    return NextResponse.json({ error: "save_failed" }, { status: 500 });
+  }
 
   return NextResponse.json({ status });
 }

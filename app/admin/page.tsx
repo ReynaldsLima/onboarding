@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/auth";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
 import { createClient } from "./actions";
 
@@ -16,6 +17,8 @@ const STATUS_CLASSES: Record<string, string> = {
 };
 
 export default async function AdminPage() {
+  await requireAdmin();
+
   const supabase = createAdminSupabaseClient();
   const { data: clients } = await supabase
     .from("clients")
