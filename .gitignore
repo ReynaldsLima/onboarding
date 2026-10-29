@@ -45,3 +45,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# harness-managed worktrees (EnterWorktree) — scratch, not source
+.claude/worktrees/
